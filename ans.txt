@@ -1,0 +1,457 @@
+1. Uninformed Search Algorithm – BFS (Breadth First Search)
+
+from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+visited = set()
+queue = deque(['A'])
+
+print("BFS Traversal:")
+
+while queue:
+    node = queue.popleft()
+
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+
+        for neighbour in graph[node]:
+            queue.append(neighbour)
+
+
+---
+
+2. Uninformed Search Algorithm – DFS (Depth First Search)
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+visited = set()
+
+def dfs(node):
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+
+        for neighbour in graph[node]:
+            dfs(neighbour)
+
+print("DFS Traversal:")
+dfs('A')
+
+
+---
+
+3. Informed Search Algorithm – A*
+
+from queue import PriorityQueue
+
+graph = {
+    'A': [('B', 1), ('C', 3)],
+    'B': [('D', 3), ('E', 1)],
+    'C': [('F', 5)],
+    'D': [],
+    'E': [('F', 2)],
+    'F': []
+}
+
+heuristic = {
+    'A': 6,
+    'B': 4,
+    'C': 4,
+    'D': 3,
+    'E': 1,
+    'F': 0
+}
+
+def a_star(start, goal):
+    pq = PriorityQueue()
+    pq.put((0, start))
+    cost = {start: 0}
+
+    while not pq.empty():
+        current = pq.get()[1]
+
+        if current == goal:
+            print("Goal Reached:", goal)
+            return
+
+        for neighbour, weight in graph[current]:
+            new_cost = cost[current] + weight
+
+            if neighbour not in cost or new_cost < cost[neighbour]:
+                cost[neighbour] = new_cost
+                priority = new_cost + heuristic[neighbour]
+                pq.put((priority, neighbour))
+
+a_star('A', 'F')
+
+
+---
+
+4. Memory Bounded A*
+
+from queue import PriorityQueue
+
+graph = {
+    'A': [('B', 1), ('C', 2)],
+    'B': [('D', 4)],
+    'C': [('E', 3)],
+    'D': [],
+    'E': []
+}
+
+heuristic = {
+    'A': 5,
+    'B': 3,
+    'C': 2,
+    'D': 0,
+    'E': 0
+}
+
+def memory_bounded_astar(start, goal, memory_limit):
+    pq = PriorityQueue()
+    pq.put((0, start))
+    visited = []
+
+    while not pq.empty():
+        if len(visited) > memory_limit:
+            visited.pop(0)
+
+        cost, node = pq.get()
+
+        if node == goal:
+            print("Goal Found:", node)
+            return
+
+        visited.append(node)
+
+        for neighbour, weight in graph[node]:
+            pq.put((weight + heuristic[neighbour], neighbour))
+
+memory_bounded_astar('A', 'D', 3)
+
+
+---
+
+5. Naïve Bayes Model
+
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X = data.data
+y = data.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=1
+)
+
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+6. Bayesian Network Probability Relationship
+
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
+
+model = BayesianNetwork([('Rain', 'Traffic')])
+
+cpd_rain = TabularCPD(
+    variable='Rain',
+    variable_card=2,
+    values=[[0.7], [0.3]]
+)
+
+cpd_traffic = TabularCPD(
+    variable='Traffic',
+    variable_card=2,
+    values=[[0.9, 0.4],
+            [0.1, 0.6]],
+    evidence=['Rain'],
+    evidence_card=[2]
+)
+
+model.add_cpds(cpd_rain, cpd_traffic)
+
+inference = VariableElimination(model)
+
+result = inference.query(variables=['Traffic'])
+
+print(result)
+
+
+---
+
+7. Regression Model
+
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+X = np.array([[1], [2], [3], [4], [5]])
+y = np.array([2, 4, 6, 8, 10])
+
+model = LinearRegression()
+model.fit(X, y)
+
+prediction = model.predict([[6]])
+
+print("Predicted Output:", prediction)
+
+
+---
+
+8. Decision Tree
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data,
+    data.target,
+    test_size=0.3,
+    random_state=1
+)
+
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+9. Random Forest
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data,
+    data.target,
+    test_size=0.3,
+    random_state=1
+)
+
+model = RandomForestClassifier(n_estimators=100)
+
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+10. Support Vector Machine (SVM)
+
+from sklearn.svm import SVC
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data,
+    data.target,
+    test_size=0.3,
+    random_state=1
+)
+
+model = SVC(kernel='linear')
+
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+11. Ensemble Learning Application
+
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data,
+    data.target,
+    test_size=0.3,
+    random_state=1
+)
+
+model1 = LogisticRegression(max_iter=200)
+model2 = DecisionTreeClassifier()
+model3 = SVC(probability=True)
+
+ensemble = VotingClassifier(
+    estimators=[
+        ('lr', model1),
+        ('dt', model2),
+        ('svc', model3)
+    ],
+    voting='soft'
+)
+
+ensemble.fit(X_train, y_train)
+
+prediction = ensemble.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+12. Clustering Algorithm
+
+from sklearn.cluster import KMeans
+import numpy as np
+
+X = np.array([
+    [1, 2],
+    [1, 4],
+    [1, 0],
+    [10, 2],
+    [10, 4],
+    [10, 0]
+])
+
+model = KMeans(n_clusters=2)
+
+model.fit(X)
+
+print("Cluster Labels:")
+print(model.labels_)
+
+
+---
+
+13. EM Algorithm using Gaussian Mixture
+
+from sklearn.mixture import GaussianMixture
+import numpy as np
+
+X = np.array([
+    [1, 2],
+    [2, 1],
+    [3, 4],
+    [5, 7],
+    [3, 5]
+])
+
+model = GaussianMixture(n_components=2)
+
+model.fit(X)
+
+prediction = model.predict(X)
+
+print("Cluster Predictions:")
+print(prediction)
+
+
+---
+
+14. Neural Network Model
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+data = load_iris()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data,
+    data.target,
+    test_size=0.3,
+    random_state=1
+)
+
+model = MLPClassifier(hidden_layer_sizes=(10, 10), max_iter=1000)
+
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, prediction))
+
+
+---
+
+15. Deep Learning Neural Network
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.utils import to_categorical
+
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+X_train = X_train.reshape(60000, 784) / 255.0
+X_test = X_test.reshape(10000, 784) / 255.0
+
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+
+model = Sequential()
+
+model.add(Dense(128, activation='relu', input_shape=(784,)))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(10, activation='softmax'))
+
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+model.fit(X_train, y_train, epochs=5, batch_size=32)
+
+loss, accuracy = model.evaluate(X_test, y_test)
+
+print("Accuracy:", accuracy)
